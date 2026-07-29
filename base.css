@@ -140,8 +140,17 @@ button {
     .phone {
         order: 2;
         flex: none;
+        /* Размер экрана всегда честные 390×844: пропорции устройства не
+           трогаем, в невысокое окно вписываемся масштабом (см. ниже). */
         width: 390px;
+        /* Снимаем max-width из мобильного правила: вместе с отрицательными
+           полями он схлопывал ширину рамки до размера колонки. */
+        max-width: none;
         height: 844px;
+        transform: scale(var(--phone-scale, 1));
+        /* Отрицательные поля убирают место, которое рамка занимала бы
+           без масштаба, — иначе вокруг неё остаётся пустая полоса. */
+        margin: calc(844px * (var(--phone-scale, 1) - 1) / 2) calc(390px * (var(--phone-scale, 1) - 1) / 2);
         border-radius: 48px;
         box-shadow:
             0 0 0 12px #1c1c20,
@@ -176,11 +185,19 @@ button {
     .phone {
         grid-area: phone;
         align-self: center;
-        /* Подстраиваемся под высоту окна. Вычитаем padding страницы и
-           28px «безеля», который box-shadow рисует за пределами рамки. */
-        height: min(844px, calc(100vh - 80px));
     }
 }
+
+/* Вписываем рамку в невысокое окно ноутбука масштабом, а не сжатием:
+   844px + 28px «безеля» от box-shadow + 40px отступов страницы требуют
+   ~912px высоты, а у браузера на 13" их около 730. */
+@media (max-height: 910px) { body { --phone-scale: 0.9; } }
+@media (max-height: 830px) { body { --phone-scale: 0.85; } }
+@media (max-height: 790px) { body { --phone-scale: 0.8; } }
+@media (max-height: 750px) { body { --phone-scale: 0.75; } }
+@media (max-height: 710px) { body { --phone-scale: 0.7; } }
+@media (max-height: 670px) { body { --phone-scale: 0.65; } }
+@media (max-height: 630px) { body { --phone-scale: 0.6; } }
 
 /* Табло портала логистики появляется третьей колонкой, когда для неё
    действительно есть место. */
