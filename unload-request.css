@@ -18,46 +18,61 @@
 /* ============================================================
    Демо-панель (только десктоп)
    ============================================================ */
+/* Панель встроена в раскладку страницы (см. base.css) и ничего не
+   перекрывает. Фон непрозрачный: сквозь полупрозрачный читать тяжело. */
 .ur-demo {
     display: none;
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: 94vw;
-    flex-wrap: wrap;
-    justify-content: center;
-    z-index: 20;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(14px);
-    padding: 10px 14px;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
     border-radius: 16px;
+    background: #1b1b21;
+    border: 1px solid rgba(255, 255, 255, 0.09);
     color: #fff;
     font-size: 12px;
     line-height: 16px;
-    align-items: center;
-    gap: 10px;
 }
+/* Узкое окно: панель под телефоном, шириной с него */
 @media (min-width: 600px) {
-    .ur-demo { display: inline-flex; }
+    .ur-demo {
+        display: flex;
+        order: 3;
+        width: 390px;
+    }
 }
-.ur-demo__group { display: flex; align-items: center; gap: 8px; }
-.ur-demo__label { color: #b8b8c4; white-space: nowrap; }
-.ur-demo__buttons { display: flex; align-items: center; gap: 4px; }
-.ur-demo__divider { width: 1px; height: 18px; background: rgba(255, 255, 255, 0.15); }
+/* Широкое: колонка слева от телефона */
+@media (min-width: 780px) {
+    .ur-demo {
+        grid-area: demo;
+        align-self: start;
+        width: auto;
+    }
+}
+.ur-demo__group { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+.ur-demo__label { color: #8f8fa3; }
+.ur-demo__buttons { display: flex; flex-wrap: wrap; gap: 5px; }
 .ur-demo__btn {
-    padding: 6px 12px;
+    padding: 7px 12px;
     border-radius: 10px;
-    color: #fff;
+    background: rgba(255, 255, 255, 0.07);
+    color: #e9e9f0;
     font-size: 12px;
     line-height: 16px;
-    transition: background 0.15s;
+    transition: background 0.15s, color 0.15s;
     white-space: nowrap;
 }
-.ur-demo__btn:hover:not(.is-active):not(:disabled) { background: rgba(255, 255, 255, 0.08); }
-.ur-demo__btn.is-active { background: var(--mo-accent-purple); font-weight: 600; }
-.ur-demo__btn.is-ghost { border: 1px solid rgba(255, 255, 255, 0.2); }
-.ur-demo__btn:disabled { opacity: 0.35; cursor: default; }
+.ur-demo__btn:hover:not(.is-active):not(:disabled) { background: rgba(255, 255, 255, 0.16); }
+.ur-demo__btn.is-active { background: var(--mo-accent-purple); color: #fff; font-weight: 600; }
+.ur-demo__btn.is-ghost { background: none; border: 1px solid rgba(255, 255, 255, 0.22); }
+.ur-demo__btn.is-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+.ur-demo__btn:disabled { opacity: 0.3; cursor: default; }
+/* «Проехать» ведёт весь сценарий — выделяем её среди служебных кнопок */
+#urActionBtns [data-drive]:not(:disabled) {
+    background: rgba(167, 58, 253, 0.16);
+    border-color: rgba(167, 58, 253, 0.5);
+    color: #ecd9ff;
+}
+#urActionBtns [data-drive]:not(:disabled):hover { background: rgba(167, 58, 253, 0.28); }
 
 /* ============================================================
    Табло портала логистики (десктоп). Показывает то, ради чего
@@ -65,22 +80,20 @@
    ============================================================ */
 .ur-board {
     display: none;
-    position: fixed;
-    top: 50%;
-    right: 24px;
-    transform: translateY(-50%);
-    z-index: 20;
-    width: 250px;
     padding: 16px 18px;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(14px);
+    background: #1b1b21;
+    border: 1px solid rgba(255, 255, 255, 0.09);
     color: #fff;
     font-size: 12px;
     line-height: 16px;
 }
-@media (min-width: 1000px) {
-    .ur-board { display: block; }
+@media (min-width: 1060px) {
+    .ur-board {
+        display: block;
+        grid-area: board;
+        align-self: center;
+    }
 }
 .ur-board__title { font-size: 13px; font-weight: 600; }
 .ur-board__trip { color: #9b9bab; margin-top: 2px; }
