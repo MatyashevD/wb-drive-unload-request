@@ -313,13 +313,13 @@
         if (state.req === 'sending') {
             return `<div class="ur-status ur-status--sending${cls}">
                 <span class="ur-spin"></span>
-                <span>Запрашиваем выгрузку у склада…</span>
+                <span>Запрашиваем разгрузку у склада…</span>
             </div>`;
         }
         if (state.req === 'ok') {
             return `<div class="ur-status ur-status--ok${cls}">
                 ${icon('i-check-circle', 20)}
-                <span>Склад видит вас в очереди на выгрузку</span>
+                <span>Склад видит вас в очереди на разгрузку</span>
             </div>`;
         }
         if (state.req === 'failed') {
@@ -344,7 +344,7 @@
         if (state.req === 'sending') {
             return `<div class="ur-approach ur-approach--wait">
                 <span class="ur-spin"></span>
-                <span>Запросили выгрузку. Ждём номер ворот</span>
+                <span>Запросили разгрузку. Ждём номер ворот</span>
             </div>`;
         }
         if (state.req === 'ok') {
@@ -356,7 +356,7 @@
         if (state.req === 'queued') {
             return `<div class="ur-approach ur-approach--soft">
                 ${icon('i-wifi-off', 20)}
-                <span>Нет сети. Запросим выгрузку, как появится связь</span>
+                <span>Нет сети. Запросим разгрузку, как появится связь</span>
             </div>`;
         }
         // Ошибку метода водителю знать незачем: он её не починит.
@@ -505,12 +505,12 @@
         const openCls = state.sheetShown ? ' is-open' : '';
         return `
             <div class="ur-backdrop${openCls}" id="urBackdrop" data-act="sheetCancel"></div>
-            <div class="ur-sheet${openCls}" id="urSheet" role="dialog" aria-label="Запросить выгрузку">
+            <div class="ur-sheet${openCls}" id="urSheet" role="dialog" aria-label="Запросить разгрузку">
                 <div class="ur-sheet__handle"></div>
-                <div class="ur-sheet__title">Запросить выгрузку?</div>
-                <div class="ur-sheet__text">Склад увидит, что машина готова к выгрузке, и назначит ворота.</div>
-                <button class="ur-sheet__primary" data-act="sheetConfirm">Да, я на выгрузке</button>
-                <button class="ur-sheet__cancel" data-act="sheetCancel">Ещё не готов</button>
+                <div class="ur-sheet__title">Запросить разгрузку?</div>
+                <div class="ur-sheet__text">Склад увидит, что машина готова к разгрузке, и назначит ворота.</div>
+                <button class="ur-sheet__primary" data-act="sheetConfirm">Да, я готов</button>
+                <button class="ur-sheet__cancel" data-act="sheetCancel">Нет</button>
             </div>`;
     }
 
