@@ -295,34 +295,33 @@
 .ur-hint svg { width: 22px; height: 22px; color: var(--mo-text-icon-primary); flex-shrink: 0; }
 
 /* ============================================================
-   Строка состояния запроса выгрузки.
-   Никогда не блокирует и не уводит с экрана — водитель всегда
-   может показать QR, даже если статус ещё не ушёл на портал.
+   Блок отметки прибытия. Первая строка — сам факт со временем,
+   вторая (если есть) — статус запроса разгрузки. Никогда не
+   блокирует и не уводит с экрана: водитель всегда может показать
+   QR, даже если статус ещё не ушёл на портал.
    ============================================================ */
-.ur-status {
+.ur-arrival {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     border-radius: 14px;
     padding: 11px 14px;
-    margin-top: 8px;
+    margin-top: 12px;
+}
+.ur-arrival svg { width: 20px; height: 20px; flex-shrink: 0; }
+/* Иконка выравнивается по первой строке текста, а не по центру блока */
+.ur-arrival > svg,
+.ur-arrival > .ur-spin { margin-top: 1px; }
+.ur-arrival--ok { background: var(--ur-ok-bg); color: var(--ur-ok-fg); }
+.ur-arrival--wait { background: var(--mo-bg-level-2); color: var(--mo-text-icon-secondary); }
+.ur-arrival__title { font-size: 14px; line-height: 18px; font-weight: 600; }
+.ur-arrival__sub {
     font-size: 14px;
     line-height: 18px;
+    margin-top: 2px;
+    /* Тот же цвет, но тише: факт прибытия важнее статуса отправки */
+    opacity: 0.8;
 }
-.ur-status svg { width: 20px; height: 20px; flex-shrink: 0; }
-.ur-status--sending { background: var(--mo-bg-level-2); color: var(--mo-text-icon-secondary); }
-.ur-status--ok { background: var(--ur-ok-bg); color: var(--ur-ok-fg); }
-.ur-status--warn { background: var(--mo-warning-bg); color: var(--mo-warning-fg); }
-.ur-status__retry {
-    margin-left: auto;
-    flex-shrink: 0;
-    font-size: 14px;
-    line-height: 18px;
-    font-weight: 600;
-    color: inherit;
-    text-decoration: underline;
-}
-.ur-status--compact { margin-top: 12px; }
 
 /* ============================================================
    Вариант В: блок подъезда к складу. Единственное место, где

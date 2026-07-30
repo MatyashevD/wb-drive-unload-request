@@ -32,6 +32,10 @@
         timer: '02:10:40',
     };
 
+    // Одно время на статус-бар и на отметку прибытия, чтобы прототип
+    // не противоречил сам себе.
+    const NOW = '12:30';
+
     // Дорога до склада. km — расстояние, lead — сколько минут форы
     // получит склад, если узнает о машине в этой точке.
     const ROAD = [
@@ -247,9 +251,6 @@
             state.screen = 'point';
             render();
         },
-        retry: function () {
-            attemptRequest(false);
-        },
         noop: function () {},
     };
 
@@ -269,7 +270,7 @@
             : `<span class="is-off">${icon('i-wifi-off', 16)}</span>`;
         return `
             <div class="ur-statusbar">
-                <span class="ur-statusbar__time">12:30</span>
+                <span class="ur-statusbar__time">${NOW}</span>
                 <span class="ur-statusbar__icons">
                     ${wifi}
                     <svg width="17" height="13" viewBox="0 0 18 14" aria-hidden="true"><use href="#i-sb-signal"/></svg>
@@ -305,37 +306,44 @@
             </div>`;
     }
 
-    // Обратная связь у ворот (варианты А и Б). Оставлена намеренно:
-    // на демонстрации видно, что при позднем триггере мы сообщаем
-    // водителю то, что он и так уже знает.
-    function statusRow(compact) {
-        const cls = compact ? ' ur-status--compact' : '';
-        if (state.req === 'sending') {
-            return `<div class="ur-status ur-status--sending${cls}">
-                <span class="ur-spin"></span>
-                <span>Запрашиваем разгрузку у склада…</span>
-            </div>`;
+    // Отметка прибытия. Тап останавливает таймер маршрута, то есть меняет
+    // состояние поездки, — такой факт нельзя оставлять без подтверждения.
+    // Время указано не для красоты: это аргумент водителя в разговоре о
+    // простое, если склад держит машину.
+    //
+    // Вторая строка отдана статусу запроса разгрузки, поэтому оба вопроса
+    // водителя — «отметилось?» и «склад знает?» — закрываются одним блоком.
+    // В строке живёт только то, что ему полезно: ошибку метода не
+    // показываем, её всё равно нечем починить, а следствие ошибки видно по
+    // номеру ворот выше.
+    function arrivalBlock(withRequest) {
+        let tone = 'ok';
+        let mark = icon('i-check-circle', 20);
+        let sub = '';
+
+        if (withRequest) {
+            if (state.req === 'sending') {
+                tone = 'wait';
+                mark = '<span class="ur-spin"></span>';
+                sub = 'Запрашиваем разгрузку у склада…';
+            } else if (state.req === 'ok') {
+                // «На разгрузку» не пишем: экран так и называется
+                sub = 'Склад видит вас в очереди';
+            } else if (state.req === 'queued') {
+                tone = 'wait';
+                mark = icon('i-wifi-off', 20);
+                sub = 'Нет сети. Отправим на сервер, как появится связь';
+            }
         }
-        if (state.req === 'ok') {
-            return `<div class="ur-status ur-status--ok${cls}">
-                ${icon('i-check-circle', 20)}
-                <span>Склад видит вас в очереди на разгрузку</span>
+
+        return `
+            <div class="ur-arrival ur-arrival--${tone}">
+                ${mark}
+                <div class="ur-arrival__text">
+                    <div class="ur-arrival__title">Прибытие отмечено в ${NOW}</div>
+                    ${sub ? `<div class="ur-arrival__sub">${sub}</div>` : ''}
+                </div>
             </div>`;
-        }
-        if (state.req === 'failed') {
-            return `<div class="ur-status ur-status--warn${cls}">
-                ${icon('i-alert', 20)}
-                <span>Склад пока не уведомлён, повторяем</span>
-                <button class="ur-status__retry" data-act="retry">Повторить</button>
-            </div>`;
-        }
-        if (state.req === 'queued') {
-            return `<div class="ur-status ur-status--warn${cls}">
-                ${icon('i-wifi-off', 20)}
-                <span>Нет сети. Отправим запрос, как появится связь</span>
-            </div>`;
-        }
-        return '';
     }
 
     // Варианты В и Г: что водитель видит на подъезде. Здесь обратная
@@ -436,7 +444,7 @@
 
         let feedback = '';
         if (onApproach) feedback = approachBlock();
-        else if (state.arrived && !geoVariant) feedback = statusRow(true);
+        else if (state.arrived) feedback = arrivalBlock(!geoVariant);
 
         return `
             ${statusbar()}
@@ -491,7 +499,7 @@
                     ${gateLabel()}
                     ${qrSvg()}
                     <div class="ur-hint">${icon('i-info-filled', 22)}<span>Покажите QR-код сотруднику склада</span></div>
-                    ${geoVariant ? '' : statusRow(false)}
+                    ${arrivalBlock(!geoVariant)}
                     <div class="ur-row">${icon('i-warehouse')}<span>${TRIP.address}</span></div>
                     <div class="ur-row">${icon('i-crate')}<span>${TRIP.tara}</span></div>
                 </div>
